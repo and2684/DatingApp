@@ -1,25 +1,36 @@
+using System.Text;
 using API.Data;
+using API.Extensions;
+using API.Interfaces;
+using API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-// EF framework core adding Dbcontext
-builder.Services.AddDbContext<DataContext>(options =>
-{
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
-
-// CORS is a security mechanism that not allows to run our api from other sources 
-// (for example api on localhost:5001 cannot be run from localhost:4200 while we didn't set up CORS)
-builder.Services.AddCors();
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// CORS - это защитны механизм, позволяющий запускать наше приложение с других хостов
+// (например у нас api нас localhost:5001 и мы его не сможем запустить с ангуляра, который на localhost:4200 пока не включим CORS)
+builder.Services.AddCors();
 builder.Services.AddLogging(); // Add MAS 25.05.2022
+
+// Add MAS 31.05.2022
+// Вынесли все включения сервисов в папку Extenstions
+// Сервисы приложения (EF core, создание токенов и пр.)
+builder.AddApplicationServices();
+// Сервисы аутентификации
+builder.AddIdentityServices();
+// End Add MAS 31.05.2022
 
 var app = builder.Build();
 
@@ -35,6 +46,7 @@ app.UseHttpsRedirection();
 
 app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));  
 
+app.UseAuthentication(); // Add MAS 31.05.2022
 app.UseAuthorization();
 
 app.MapControllers();
