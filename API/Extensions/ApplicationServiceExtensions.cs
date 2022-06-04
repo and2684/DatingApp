@@ -7,16 +7,18 @@ namespace API.Extensions
 {
     public static class ApplicationServiceExtensions
     {
-        public static WebApplicationBuilder AddApplicationServices(this WebApplicationBuilder builder)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
             // EF core
-            builder.Services.AddDbContext<DataContext>(options =>
+            services.AddDbContext<DataContext>(options =>
             {
-                options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlite(config.GetConnectionString("DefaultConnection"));
             });
-            builder.Services.AddScoped<ITokenService, TokenService>(); // Сервис для создания токенов юзеров при регистрации/логине
+            
+            // Сервис для создания токенов юзеров при регистрации/логине    
+            services.AddScoped<ITokenService, TokenService>(); 
 
-            return builder;
+            return services;
         }        
     }
 }

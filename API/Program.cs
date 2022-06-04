@@ -27,9 +27,9 @@ builder.Services.AddLogging(); // Add MAS 25.05.2022
 // Add MAS 31.05.2022
 // Вынесли все включения сервисов в папку Extenstions
 // Сервисы приложения (EF core, создание токенов и пр.)
-builder.AddApplicationServices();
+builder.Services.AddApplicationServices(builder.Configuration);
 // Сервисы аутентификации
-builder.AddIdentityServices();
+builder.Services.AddIdentityServices(builder.Configuration);
 // End Add MAS 31.05.2022
 
 var app = builder.Build();

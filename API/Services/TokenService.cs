@@ -1,6 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using API.Entities;
 using API.Interfaces;
@@ -21,21 +20,21 @@ namespace API.Services
         {
             var claims = new List<Claim>()
             {
-                new Claim(JwtRegisteredClaimNames.NameId, user.UserName)
+                new Claim(JwtRegisteredClaimNames.NameId, user.UserName) // Claims - что хранит токен (здесь субъект токена - это имя пользователя)
             };
 
-            var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
+            var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature); // Ключ для токена
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(7),
+                Expires = DateTime.Now.AddDays(7), // Время жизни токена
                 SigningCredentials = creds
             };
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            var tokenHandler = new JwtSecurityTokenHandler();      // tokenHandler нужен для создания токена и его преобразования в string
+            var token = tokenHandler.CreateToken(tokenDescriptor); // Создали токен
+            return tokenHandler.WriteToken(token);                 // Вернули токен в виде string
         }
     }
 }

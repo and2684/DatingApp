@@ -6,21 +6,21 @@ namespace API.Extensions
 {
     public static class IdentityServiceExtensions
     {
-        public static WebApplicationBuilder AddIdentityServices(this WebApplicationBuilder builder)
+        public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
         {
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenKey"])),
-                        ValidateIssuer = false, // Издатель jwt-токена - это наш API сервер
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"])),
+                        ValidateIssuer = false,  // Издатель jwt-токена - это наш API сервер
                         ValidateAudience = false // А слушатель - это Angular frontend application
                     };
                 });
 
-            return builder;
+            return services;
         }
     }
 }
