@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ToastrModule } from 'ngx-toastr';
 
-
-
 @NgModule({
   declarations: [],
   imports: [
