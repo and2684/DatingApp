@@ -29,7 +29,7 @@ namespace API.Controllers
 
             var user = new AppUser()
             {
-                UserName = registerDto.UserName.ToLower(),
+                Username = registerDto.UserName.ToLower(),
                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)), // Храним не сам пароль, а его хэш
                 PasswordSalt = hmac.Key // И уникальный ключ, сгенерированный при создании объекта hmac
             };
@@ -40,7 +40,7 @@ namespace API.Controllers
             // Вместо AppUser теперь возвращаем UserDto, в конструкторе которого мы генерируем jwt-токен с помощью token service
             return new UserDto
             {
-                UserName = user.UserName,
+                Username = user.Username,
                 Token = _tokenService.CreateToken(user)
             };
         }
@@ -49,9 +49,10 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             var user = await _context.Users
-                .SingleOrDefaultAsync(x => x.UserName == loginDto.UserName);
+                .SingleOrDefaultAsync(x => x.Username == loginDto.Username);
 
             if (user == null) return Unauthorized("Invalid username.");
+            if (user.PasswordHash == null || user.PasswordSalt == null) return Unauthorized("Invalid password hash/salt");
 
             using var hmac = new HMACSHA512(user.PasswordSalt); // Теперь мы расшифровываем пароль с помощью Ключа, хранящегося в PasswordSalt
 
@@ -64,14 +65,14 @@ namespace API.Controllers
             // Вместо AppUser теперь возвращаем UserDto, в конструкторе которого мы генерируем jwt-токен с помощью token service
             return new UserDto
             {
-                UserName = user.UserName,
+                Username = user.Username,
                 Token = _tokenService.CreateToken(user)
             };
         }
 
         private async Task<bool> UserExists(string username)
-        {
-            return await _context.Users.AnyAsync(x => x.UserName == username.ToLower());
+        {            
+            return await _context.Users.AnyAsync(x => x.Username == username.ToLower());
         }
     }
 }

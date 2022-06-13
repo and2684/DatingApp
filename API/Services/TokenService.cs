@@ -20,7 +20,7 @@ namespace API.Services
         {
             var claims = new List<Claim>()
             {
-                new Claim(JwtRegisteredClaimNames.NameId, user.UserName) // Claims - что хранит токен (здесь субъект токена - это имя пользователя)
+                new Claim(JwtRegisteredClaimNames.NameId, user.Username) // Claims - что хранит токен (здесь субъект токена - это имя пользователя)
             };
 
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature); // Ключ для токена

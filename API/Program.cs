@@ -35,6 +35,22 @@ builder.Services.AddIdentityServices(builder.Configuration);
 
 var app = builder.Build();
 
+// Выполнять миграции при запуске приложения
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var context = scope.ServiceProvider.GetRequiredService<DataContext>();
+        await context.Database.MigrateAsync();
+        await Seed.SeedUsers(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = app.Services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Error occured during database migration");
+    }    
+}
+
 // Configure the HTTP request pipeline.
 /* if (app.Environment.IsDevelopment())
 {
@@ -48,7 +64,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
-app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));  
+app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
 
 app.UseAuthentication(); // Add MAS 31.05.2022
 app.UseAuthorization();
