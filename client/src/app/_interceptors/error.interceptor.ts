@@ -30,12 +30,10 @@ export class ErrorInterceptor implements HttpInterceptor {
                 }
               }
               else {
-//                this.toastr.error(error.statusText, error.status);
                 this.toastr.error('Bad request', error.status);
               }
               break;
             case 401:
-//              this.toastr.error(error.statusText, error.status)  
               this.toastr.error('Not authorized', error.status);
               break;
             case 404:

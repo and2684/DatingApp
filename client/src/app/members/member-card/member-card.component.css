@@ -1,0 +1,55 @@
+.card-img-top {
+    width: 100%;
+    object-fit: center;
+    border-top-left-radius: 5%;
+    border-top-right-radius: 5%;
+}
+
+.card {
+    border-radius: 5%;
+    width: 170px;
+    box-shadow: 0 6px 10px rgba(0,0,0,.08), 0 0 6px rgba(0,0,0,.05);
+      transition: .3s transform cubic-bezier(.155,1.105,.295,1.12),.3s box-shadow,.3s -webkit-transform cubic-bezier(.155,1.105,.295,1.12);    
+    cursor: pointer;      
+    background-color: aliceblue;
+    overflow:hidden;
+}
+
+.card:hover {
+    transform: scale(1.1);
+    opacity: 0.9;
+    box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06); 
+    transition: 300ms ease-in;
+}
+
+.card:hover img {
+    transform: scale(1.7);
+    transition: 15000ms ease-out;      
+}
+
+.card img {
+    transform: scale(1.0, 1.0);
+    transition: 500ms ease-out;  
+}
+
+.card-img-carrier {
+    overflow:hidden;
+    position:relative;
+}
+
+.member-icons {
+    position:absolute;
+    bottom: -30%;
+    left: 0;
+    right: 0;
+    margin-right: auto;
+    margin-left: auto;
+    opacity: 0;
+    transition: all 400ms ease-in-out;  
+}
+
+.card:hover .member-icons{
+    bottom: 0;
+    opacity: 1;
+    transition: all 400ms ease-in-out;
+}

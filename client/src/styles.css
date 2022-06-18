@@ -1,1 +1,40 @@
 /* You can add global styles to this file, and also import other style files */
+
+html {
+  height: 100%;
+}
+
+body {
+  background: #DAE1FB;
+  background-repeat: no-repeat;
+}
+
+.member-tabset > .nav-tabs > li.active {
+  border-bottom: 2px solid rgb(0, 119, 255);
+  position: relative;
+  background-color: aliceblue;
+
+}  
+
+.member-tabset > .nav-tabs > li {
+  border-top-left-radius: 5%;
+  border-top-right-radius: 5%;  
+}  
+
+.member-tabset > .nav-tabs > li.active > a {
+  border: 0 !important;
+  color: rgb(0, 119, 255);
+  background-color: rgba(10, 133, 241, 0.041);
+}
+
+.member-tabset > .nav-tabs > li > a:hover {
+  position: relative;
+  background-color: aliceblue;  
+  border-top-left-radius: 5%;
+  border-top-right-radius: 5%;
+}
+
+.member-tabset>.tab-content {
+  border: 0;
+  padding: 15px 0;
+}
