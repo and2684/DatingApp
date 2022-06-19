@@ -14,9 +14,9 @@ export class ErrorInterceptor implements HttpInterceptor {
 
   constructor(public router: Router, private toastr: ToastrService) {}
 
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
-      catchError(error => {
+      catchError((error) => {
         if (error) {
           switch (error.status){
             case 400:
@@ -29,24 +29,24 @@ export class ErrorInterceptor implements HttpInterceptor {
                   throw modalStateErrors.flat();
                 }
               }
-              else {
+              else {                
                 this.toastr.error('Bad request', error.status);
               }
               break;
             case 401:
-              this.toastr.error('Not authorized', error.status);
+              this.toastr.error('User not authorized', error.status);
               break;
             case 404:
-              this.router.navigateByUrl('/not-found');
-              this.toastr.error('Not found', error.status);              
+              this.router.navigateByUrl('/not-found');  
+              this.toastr.error('Page not found', error.status);                           
               break;
             case 500:
               const navigationExtras: NavigationExtras = {state: {error: error.error}};
               this.router.navigateByUrl('/server-error', navigationExtras);
-              this.toastr.error('Internal server error', error.status);              
+              this.toastr.error('Internal server error', error.status);                            
               break;
             default:
-              this.toastr.error('Something unexpected went wrong');
+              this.toastr.error('Something unexpected happened');
               console.log(error);
               break;
           }

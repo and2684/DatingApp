@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary py-1">
+<nav class="navbar navbar-expand-md navbar-light fixed-top bg-light py-1">
     <div class="container">
         <a class="navbar-brand" routerLink="/"  routerLinkActive="active">Dating App</a>
 
@@ -21,9 +21,9 @@
         </ul>
 
         <div class="dropdown" *ngIf="(accountService.currentUser$ | async) as user" dropdown>
-            <a class="dropdown-toggle text-light" dropdownToggle>Welcome {{user.username | titlecase}}</a>
+            <a class="dropdown-toggle text-dark" dropdownToggle>Welcome {{user.username | titlecase}}</a>
             <div class="dropdown-menu mt-2" *dropdownMenu>
-                <a class="dropdown-item">Edit Profile</a>
+                <a class="dropdown-item" routerLink="member/edit" routerLinkActive="active">Edit Profile</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" (click)="logout()">Logout</a>
             </div>

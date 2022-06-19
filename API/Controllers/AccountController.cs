@@ -23,13 +23,13 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
-            if (await UserExists(registerDto.UserName)) return BadRequest("Username is taken.");
+            if (await UserExists(registerDto.Username)) return BadRequest("Username is taken.");
 
             using var hmac = new HMACSHA512(); // Хэш-алгоритм для шифрования пароля. Здесь генерируется ключ, с помощью которого хэш пароля будет преобразован в пароль (hmac.Key)
 
             var user = new AppUser()
             {
-                Username = registerDto.UserName.ToLower(),
+                Username = registerDto.Username.ToLower(),
                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)), // Храним не сам пароль, а его хэш
                 PasswordSalt = hmac.Key // И уникальный ключ, сгенерированный при создании объекта hmac
             };
