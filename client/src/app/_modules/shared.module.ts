@@ -4,6 +4,8 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ToastrModule } from 'ngx-toastr';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
+import { NgxSpinnerModule } from 'ngx-spinner';
+
 
 @NgModule({
   declarations: [],
@@ -14,13 +16,15 @@ import { NgxGalleryModule } from '@kolkov/ngx-gallery';
       positionClass: 'toast-bottom-right'
     }),
     TabsModule.forRoot(), // Модуль для вкладок
-    NgxGalleryModule // Просмотрщик фоточек
+    NgxGalleryModule, // Просмотрщик фоточек
+    NgxSpinnerModule // Крутяшка для визуализации загрузки
   ],
   exports: [
     BsDropdownModule, 
     ToastrModule,
     TabsModule, // Не забыть добавить модуль в экспорт!
-    NgxGalleryModule // Просмотрщик фоточек
+    NgxGalleryModule, // Просмотрщик фоточек
+    NgxSpinnerModule // Крутяшка для визуализации загрузки
   ]
 })
 export class SharedModule { }

@@ -22,7 +22,7 @@ export class MemberEditComponent implements OnInit {
     }
   } // Host listener позволяет получать доступ к eventам браузера. Здесь мы проверяем, что содержимое формы поменялось (form.dirty=true)
 
-  constructor(private accountService: AccountService, private memberService: MembersService, private toastr: ToastrService) { 
+  constructor(private accountService: AccountService, private memberService: MembersService, private toastr: ToastrService) {
     this.accountService.currentUser$.pipe(take(1)).subscribe(currentuser => this.user = currentuser); // Получим текущего пользователя в локальную переменную класса (user: User)
   }
 
@@ -35,9 +35,10 @@ export class MemberEditComponent implements OnInit {
   }
 
   updateMember() { // Сохранить изменения
-    console.log(this.member);
-    this.toastr.success("Profile updated successfully!");
-    this.editForm.reset(this.member); // Перезагрузить форму, сохранив текущего пользователя
+    this.memberService.updateMember(this.member).subscribe(() => {
+      this.toastr.success("Profile updated successfully!");
+      this.editForm.reset(this.member); // Перезагрузить форму, сохранив текущего пользователя 
+    });
   }
 
 

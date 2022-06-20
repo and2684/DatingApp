@@ -21,6 +21,7 @@ import { ServerErrorComponent } from './errors/server-error/server-error.compone
 import { MemberCardComponent } from './members/member-card/member-card.component';
 import { JwtInterceptor } from './_interceptors/jwt.interceptor';
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
+import { LoadingInterceptor } from './_interceptors/loading.interceptor';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { MemberEditComponent } from './members/member-edit/member-edit.component
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}, // Error handler
-    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}    // Добавляет JWT-token к каждому http-request, если мы залогинированы
+    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},    // Добавляет JWT-token к каждому http-request, если мы залогинированы
+    {provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true}    // Для того, чтоб крутилась загрузочка
   ],
   bootstrap: [AppComponent]
 })

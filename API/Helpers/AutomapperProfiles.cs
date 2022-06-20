@@ -18,6 +18,8 @@ namespace API.Helpers
                 .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalculateAge())); // Считаем возраст юзера
                 
             CreateMap<Photo, PhotoDto>(); // Из Photo в PhotoDto
+
+            CreateMap<MemberUpdateDto, AppUser>();            
         }
     }
 }

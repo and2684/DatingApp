@@ -32,6 +32,7 @@
               "node_modules/bootswatch/dist/zephyr/bootstrap.min.css",
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/ngx-toastr/toastr.css",
+              "node_modules/ngx-spinner/animations/ball-running-dots.css",
               "src/styles.css"              
             ],
             "scripts": []
