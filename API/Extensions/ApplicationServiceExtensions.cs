@@ -11,7 +11,7 @@ namespace API.Extensions
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
             // EF core
-            services.AddDbContext<DataContext>(async options =>
+            services.AddDbContext<DataContext>(options =>
             {
                 options.UseSqlite(config.GetConnectionString("DefaultConnection"));
             });
@@ -24,6 +24,12 @@ namespace API.Extensions
 
             // Automapper
             services.AddAutoMapper(typeof(AutomapperProfiles).Assembly);
+
+            // Настройки cloudinary, читаем их из appsettings.json
+            services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));    
+
+            // Сервис для добавления / удаления фоток в Cloudinary
+            services.AddScoped<IPhotoService, PhotoService>();        
 
             return services;
         }        
