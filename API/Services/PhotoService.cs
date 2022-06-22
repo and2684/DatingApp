@@ -8,7 +8,7 @@ namespace API.Services
 {
     public class PhotoService : IPhotoService
     {
-        private readonly Cloudinary? _cloudinary;
+        private readonly Cloudinary _cloudinary;
 
         public PhotoService(IOptions<CloudinarySettings> config)
         {
@@ -19,7 +19,7 @@ namespace API.Services
                 config.Value.ApiSecret
             );
 
-            var _cloudinary = new Cloudinary(acc); // Инициализируем объект класса Cloudinary, который будет заниматься загрузкой и удалением фоток
+            _cloudinary = new Cloudinary(acc); // Инициализируем объект класса Cloudinary, который будет заниматься загрузкой и удалением фоток
         }
 
         public async Task<ImageUploadResult> AddPhotoAsync(IFormFile file)
@@ -35,8 +35,7 @@ namespace API.Services
                     Transformation = new Transformation().Height(500).Width(500).Crop("fill").Gravity("face")
                 };
 
-                if (_cloudinary != null)
-                    uploadResult = await _cloudinary.UploadAsync(uploadParams);               
+                uploadResult = await _cloudinary!.UploadAsync(uploadParams);               
             }
 
             return uploadResult;            

@@ -23,7 +23,7 @@ namespace API.Data
 
         public async Task<MemberDto?> GetMemberAsync(string username)
         {
-            var res = await _context.Users
+            var res = await _context.Users!
                 .Where(x => x.Username == username)
                 .ProjectTo<MemberDto>(_mapper.ConfigurationProvider) // Такой маппинг позволяет не забирать из БД все поля для AppUser, а брать только то, что нужно в MemberDto. ConfigurationProvider инициализируется через DI в классе AutomapperProfiler
                 .SingleOrDefaultAsync();
@@ -31,7 +31,7 @@ namespace API.Data
             return res;
         }
 
-        public async Task<IEnumerable<MemberDto>> GetMembersAsync()
+        public async Task<IEnumerable<MemberDto?>> GetMembersAsync()
         {
             var res = await _context.Users
                 .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
@@ -42,19 +42,19 @@ namespace API.Data
 
         public async Task<AppUser?> GetUserByIdAsync(int id)
         {
-            return await _context.Users.FindAsync(id);
+            return await _context.Users!.FindAsync(id);
         }
 
         public async Task<AppUser?> GetUserByUsernameAsync(string username)
         {
-            return await _context.Users
+            return await _context.Users!
                 .Include(p => p.Photos)
                 .SingleOrDefaultAsync(x => x.Username == username);
         }
 
         public async Task<IEnumerable<AppUser?>> GetUsersAsync()
         {
-            return await _context.Users
+            return await _context.Users!
                 .Include(p => p.Photos)
                 .ToListAsync();
         }

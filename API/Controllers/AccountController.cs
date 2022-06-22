@@ -34,7 +34,7 @@ namespace API.Controllers
                 PasswordSalt = hmac.Key // И уникальный ключ, сгенерированный при создании объекта hmac
             };
 
-            _context.Users.Add(user);
+            _context.Users!.Add(user);
             await _context.SaveChangesAsync();
 
             // Вместо AppUser теперь возвращаем UserDto, в конструкторе которого мы генерируем jwt-токен с помощью token service
@@ -48,7 +48,7 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            var user = await _context.Users
+            var user = await _context.Users!
                 .SingleOrDefaultAsync(x => x.Username == loginDto.Username);
 
             if (user == null) return Unauthorized("Invalid username.");
@@ -56,7 +56,7 @@ namespace API.Controllers
 
             using var hmac = new HMACSHA512(user.PasswordSalt); // Теперь мы расшифровываем пароль с помощью Ключа, хранящегося в PasswordSalt
 
-            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));                       
+            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password!));                       
             for (int i = 0; i < computedHash.Length; i++)
             {
                 if(computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid password."); // Проверяем посимвольно хэш пароля
@@ -72,7 +72,7 @@ namespace API.Controllers
 
         private async Task<bool> UserExists(string username)
         {            
-            return await _context.Users.AnyAsync(x => x.Username == username.ToLower());
+            return await _context.Users!.AnyAsync(x => x.Username == username.ToLower());
         }
     }
 }
