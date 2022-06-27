@@ -5,6 +5,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { FileUploadModule } from 'ng2-file-upload';
 
 
 @NgModule({
@@ -17,14 +18,16 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     }),
     TabsModule.forRoot(), // Модуль для вкладок
     NgxGalleryModule, // Просмотрщик фоточек
-    NgxSpinnerModule // Крутяшка для визуализации загрузки
+    NgxSpinnerModule, // Крутяшка для визуализации загрузки
+    FileUploadModule // Загрузчик файлов (Картинок)
   ],
   exports: [
     BsDropdownModule, 
     ToastrModule,
     TabsModule, // Не забыть добавить модуль в экспорт!
     NgxGalleryModule, // Просмотрщик фоточек
-    NgxSpinnerModule // Крутяшка для визуализации загрузки
+    NgxSpinnerModule, // Крутяшка для визуализации загрузки
+    FileUploadModule // Загрузчик файлов (Картинок)
   ]
 })
 export class SharedModule { }

@@ -2,3 +2,10 @@
     cursor: pointer;
     font-size:small;
 }
+
+img {
+    max-height: 50px;
+    border: 1px solid gray;
+    display: inline;
+    margin-right: 5px;
+}
