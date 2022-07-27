@@ -4,6 +4,7 @@ using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,11 +14,13 @@ namespace API.Controllers
     {
         private readonly DataContext _context;
         private readonly ITokenService _tokenService;
+        private readonly IMapper _mapper;
 
-        public AccountController(DataContext context, ITokenService tokenService)
+        public AccountController(DataContext context, ITokenService tokenService, IMapper mapper)
         {
             _context = context;
             _tokenService = tokenService;
+            _mapper = mapper;
         }
 
         [HttpPost("register")]
@@ -25,14 +28,13 @@ namespace API.Controllers
         {
             if (await UserExists(registerDto.Username)) return BadRequest("Username is taken.");
 
+            var user = _mapper.Map<AppUser>(registerDto);
+
             using var hmac = new HMACSHA512(); // Хэш-алгоритм для шифрования пароля. Здесь генерируется ключ, с помощью которого хэш пароля будет преобразован в пароль (hmac.Key)
 
-            var user = new AppUser()
-            {
-                Username = registerDto.Username.ToLower(),
-                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)), // Храним не сам пароль, а его хэш
-                PasswordSalt = hmac.Key // И уникальный ключ, сгенерированный при создании объекта hmac
-            };
+            user.Username = registerDto.Username.ToLower();
+            user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)); // Храним не сам пароль, а его хэш
+            user.PasswordSalt = hmac.Key; // И уникальный ключ, сгенерированный при создании объекта hmac
 
             _context.Users!.Add(user);
             await _context.SaveChangesAsync();
@@ -41,7 +43,8 @@ namespace API.Controllers
             return new UserDto
             {
                 Username = user.Username,
-                Token = _tokenService.CreateToken(user)
+                Token = _tokenService.CreateToken(user),
+                KnownAs = (user.KnownAs ?? string.Empty)
             };
         }
 
@@ -54,6 +57,7 @@ namespace API.Controllers
 
             if (user == null) return Unauthorized("Invalid username.");
             if (user.PasswordHash == null || user.PasswordSalt == null) return Unauthorized("Invalid password hash/salt");
+            if (user.Username == null) return Unauthorized("Username is empty");
 
             using var hmac = new HMACSHA512(user.PasswordSalt); // Теперь мы расшифровываем пароль с помощью Ключа, хранящегося в PasswordSalt
 
@@ -68,7 +72,8 @@ namespace API.Controllers
             {
                 Username = user.Username,
                 Token = _tokenService.CreateToken(user),
-                PhotoUrl = user.Photos?.FirstOrDefault(x => x.IsMain)?.Url
+                PhotoUrl = user.Photos?.FirstOrDefault(x => x.IsMain)?.Url,
+                KnownAs = (user.KnownAs ?? string.Empty)
             };
         }
 

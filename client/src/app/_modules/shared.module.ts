@@ -6,6 +6,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { FileUploadModule } from 'ng2-file-upload';
+import { BsDatepickerModule} from 'ngx-bootstrap/datepicker'
 
 
 @NgModule({
@@ -17,17 +18,19 @@ import { FileUploadModule } from 'ng2-file-upload';
       positionClass: 'toast-bottom-right'
     }),
     TabsModule.forRoot(), // Модуль для вкладок
-    NgxGalleryModule, // Просмотрщик фоточек
+    NgxGalleryModule, // Просмотр фоточек
     NgxSpinnerModule, // Крутяшка для визуализации загрузки
-    FileUploadModule // Загрузчик файлов (Картинок)
+    FileUploadModule, // Загрузчик файлов (Картинок)
+    BsDatepickerModule.forRoot() // Ангуляровский календарик
   ],
   exports: [
     BsDropdownModule, 
     ToastrModule,
     TabsModule, // Не забыть добавить модуль в экспорт!
-    NgxGalleryModule, // Просмотрщик фоточек
+    NgxGalleryModule, // Просмотр фоточек
     NgxSpinnerModule, // Крутяшка для визуализации загрузки
-    FileUploadModule // Загрузчик файлов (Картинок)
+    FileUploadModule, // Загрузчик файлов (Картинок)
+    BsDatepickerModule // Ангуляровский календарик
   ]
 })
 export class SharedModule { }
