@@ -7,6 +7,7 @@ using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +23,7 @@ namespace API.Controllers
         private readonly IMapper _mapper;
         private readonly IPhotoService _photoService;
 
-        public UsersController(IUserRepository userRepository, IMapper mapper, 
+        public UsersController(IUserRepository userRepository, IMapper mapper,
                                IPhotoService photoService)
         {
             _photoService = photoService;
@@ -32,24 +33,36 @@ namespace API.Controllers
 
         // api/users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers ()
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery] UserParams userParams) // Без атрибута [FromQuery] мы получаем ошибку 415, если не заданы параметры пагинации
         {
             // Del MAS 13.06.2022
-            // Возвращаем сразу Ienumerable of MemberDto с помощью нового метода GetMembersAsync
+            // Возвращаем сразу IEnumerable of MemberDto с помощью нового метода GetMembersAsync
             // var users = await _userRepository.GetUsersAsync();
             // var usersToReturn = _mapper.Map<IEnumerable<MemberDto>>(users); // Маппим users (ienumerable of users) в ienumerable of memberdto's
             // return Ok(usersToReturn);
             // End Del MAS 13.06.2022
 
-            var users = await _userRepository.GetMembersAsync();
+            var user = await _userRepository.GetUserByUsernameAsync(User.GetUsername());
+
+            if (user != null && !string.IsNullOrEmpty(user.Username) && !string.IsNullOrEmpty(user.Gender))
+            {
+                userParams.CurrentUsername = user.Username;
+                if (string.IsNullOrEmpty(userParams.Gender))
+                    userParams.Gender = (user.Gender.ToLowerInvariant() == "male") ? "female" : "male";
+            }
+
+            var users = await _userRepository.GetMembersAsync(userParams);
+            if (users != null)
+                Response.AddPaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
+
             return Ok(users);
         }
 
-       
+
         // api/users/5
-        [HttpGet("{username}", 
+        [HttpGet("{username}",
                  Name = "GetUser")] // Добавил Name, чтобы использовать его в ответе 201 CreatedAtRoute в методе AddPhoto (ниже) // Add MAS 22.06.2022
-        public async Task<ActionResult<MemberDto?>> GetUser (string username)
+        public async Task<ActionResult<MemberDto?>> GetUser(string username)
         {
             // Del MAS 13.06.2022
             // Возвращаем сразу MemberDto с помощью нового метода GetMemberAsync
@@ -58,7 +71,7 @@ namespace API.Controllers
             // End Del MAS 13.06.2022
 
             return await _userRepository.GetMemberAsync(username);
-        }        
+        }
 
         [HttpPut]
         public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
@@ -67,11 +80,11 @@ namespace API.Controllers
 
             _mapper.Map(memberUpdateDto, user);
 
-            _userRepository.Update(user!);            
+            _userRepository.Update(user!);
 
-            if (await _userRepository.SaveAllAsync()) 
+            if (await _userRepository.SaveAllAsync())
                 return NoContent();
-            else 
+            else
                 return BadRequest("Fail update user");
         }
 
@@ -101,9 +114,9 @@ namespace API.Controllers
 
             var result = await _photoService.AddPhotoAsync(file);
 
-            if(result.Error != null)
+            if (result.Error != null)
                 return BadRequest(result.Error.Message);
-            
+
             var photo = new Photo // Добавленная фотка
             {
                 Url = result.SecureUrl.AbsoluteUri,
@@ -112,15 +125,15 @@ namespace API.Controllers
             };
 
             user!.Photos!.Add(photo);
-            
+
             if (await _userRepository.SaveAllAsync())
             {
                 //return _mapper.Map<PhotoDto>(photo); // Это работало, но возвращало 200 ОК, а при добавлении фотки правильно возвращать 201 Created
-                return CreatedAtRoute("GetUser", new{username = user.Username}, _mapper.Map<PhotoDto>(photo)); // Другое дело, тут вернется 201. В качестве места, где можно взять новый ресурс (фотку) будет указан метод GetUser с параметром "{username}" = наш user.Username, а сама фотография передана в photoDTO
+                return CreatedAtRoute("GetUser", new { username = user.Username }, _mapper.Map<PhotoDto>(photo)); // Другое дело, тут вернется 201. В качестве места, где можно взять новый ресурс (фотку) будет указан метод GetUser с параметром "{username}" = наш user.Username, а сама фотография передана в photoDTO
             }
             else
                 return BadRequest("Problem adding photo");
-        }        
+        }
 
         [HttpDelete("delete-photo/{photoId}")]
         public async Task<ActionResult> DeletePhoto(int photoId)
@@ -130,16 +143,16 @@ namespace API.Controllers
             var photo = user?.Photos?.FirstOrDefault(x => x.Id == photoId);
 
             if (photo is null) return NotFound("No photo is chosen");
-            if (photo.IsMain) return BadRequest("Cannot delete main photo");  
-                      
-            if (photo.PublicId is not null) 
+            if (photo.IsMain) return BadRequest("Cannot delete main photo");
+
+            if (photo.PublicId is not null)
             {
                 var result = await _photoService.DeletePhotoAsync(photo.PublicId);
                 if (result.Error != null) return BadRequest(result.Error.Message);
             }
-            else 
+            else
                 return BadRequest("Incorrect photo id");
-                
+
             user?.Photos?.Remove(photo);
             if (await _userRepository.SaveAllAsync()) return Ok();
 

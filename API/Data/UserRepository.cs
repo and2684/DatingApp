@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.DTOs;
 using API.Entities;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -31,13 +28,23 @@ namespace API.Data
             return res;
         }
 
-        public async Task<IEnumerable<MemberDto?>> GetMembersAsync()
+        public async Task<PagedList<MemberDto?>?> GetMembersAsync(UserParams userParams)
         {
-            var res = await _context.Users
-                .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+            var minDateOfBirth = DateTime.Today.AddYears(-userParams.MaxAge - 1);
+            var maxDateOfBirth = DateTime.Today.AddYears(-userParams.MinAge);
 
-            return res;
+            if (_context.Users != null)
+            {
+                var query = _context.Users.AsQueryable()
+                                          .Where(x => x.Username != userParams.CurrentUsername)
+                                          .Where(x => x.Gender == userParams.Gender)
+                                          .Where(x => x.DateOfBirth >= minDateOfBirth && x.DateOfBirth <= maxDateOfBirth)
+                                          .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
+                                          .AsNoTracking(); // Здесь нам нужно только читать из БД, поэтому трекинг не нужен ;
+
+                return await PagedList<MemberDto?>.CreateAsync(query, userParams.PageNumber, userParams.PageSize);
+            }
+            return null;
         }
 
         public async Task<AppUser?> GetUserByIdAsync(int id)
