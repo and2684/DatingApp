@@ -42,6 +42,13 @@ namespace API.Data
                                           .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
                                           .AsNoTracking(); // Здесь нам нужно только читать из БД, поэтому трекинг не нужен ;
 
+                // Если в userParams стоит сортировка по дате создания - сортируем по created, иначе по умолчанию (по дате создания)
+                query = userParams.OrderBy switch
+                {
+                    "created" => query.OrderByDescending(x => x.Created),
+                    _ => query.OrderByDescending(x => x.LastActive) // "_" - это default
+                };
+
                 return await PagedList<MemberDto?>.CreateAsync(query, userParams.PageNumber, userParams.PageSize);
             }
             return null;

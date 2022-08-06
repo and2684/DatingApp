@@ -31,6 +31,9 @@ namespace API.Extensions
             // Сервис для добавления / удаления фоток в Cloudinary
             services.AddScoped<IPhotoService, PhotoService>();        
 
+            // Сервис для обновления поля LastActive для текущего пользователя
+            services.AddScoped<LogUserActivity>();
+
             return services;
         }        
     }
