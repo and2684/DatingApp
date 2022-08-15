@@ -25,6 +25,27 @@
 
     <button class="btn btn-primary flex-div mt-4" type="submit">Apply filters</button>
     <button (click)="resetFilters()" class="btn btn-info flex-div mt-4" type="submit">Reset filters</button>
+
+    <div class="btn-group float-right flex-div mt-4">
+        <button 
+            type="button"
+            class="btn btn-primary" 
+            name="orderBy" 
+            [(ngModel)]="userParams.orderBy"
+            (click)="loadMembers()"
+            btnRadio="lastActive"> 
+            Last Active 
+        </button>
+        <button 
+            type="button"
+            class="btn btn-primary" 
+            name="orderBy" 
+            [(ngModel)]="userParams.orderBy"
+            (click)="loadMembers()"
+            btnRadio="created"> 
+            Newest Members     
+        </button>            
+    </div>
 </form>
 
 <div class="row">
