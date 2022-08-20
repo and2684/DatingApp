@@ -1,17 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using API.Extensions;
-
 namespace API.Entities
 {
     public class AppUser
     {
         public int Id { get; set; }
-        public string? Username { get; set; } = string.Empty;
+        public string Username { get; set; } = string.Empty;
         public byte[]? PasswordHash { get; set; }
         public byte[]? PasswordSalt { get; set; }
         public DateTime DateOfBirth {get; set;}
@@ -26,9 +18,7 @@ namespace API.Entities
         public string Country { get; set; } = string.Empty;
         public ICollection<Photo>? Photos { get; set; }
 
-        // public int GetAge()
-        // {
-        //     return DateOfBirth.CalculateAge();
-        // }
+        public ICollection<UserLike>? LikedByUsers { get; set; }
+        public ICollection<UserLike>? LikedUsers { get; set; }
     }
 }
