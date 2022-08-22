@@ -34,6 +34,9 @@ namespace API.Extensions
             // Сервис для обновления поля LastActive для текущего пользователя
             services.AddScoped<LogUserActivity>();
 
+            // Сервис для лайков
+            services.AddScoped<ILikesRepository, LikesRepository>();
+
             return services;
         }        
     }

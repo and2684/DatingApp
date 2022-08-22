@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
@@ -22,6 +18,10 @@ namespace API.Helpers
             CreateMap<MemberUpdateDto, AppUser>();         
             
             CreateMap<RegisterDto, AppUser>();   
+
+            CreateMap<AppUser, LikeDto>()
+                .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src => src.Photos!.FirstOrDefault(x => x.IsMain)!.Url)) // Записываем в PhotoUrl главное фото
+                .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalculateAge())); // Считаем возраст юзера
         }
     }
 }
