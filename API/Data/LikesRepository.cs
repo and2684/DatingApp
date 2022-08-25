@@ -1,6 +1,7 @@
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -25,20 +26,20 @@ namespace API.Data
         }
 
         // Список пользователей, которых лайкнул пользователь userId
-        public async Task<IEnumerable<LikeDto>?> GetUserLikes(string predicate, int userId)
+        public async Task<PagedList<LikeDto>?> GetUserLikes(LikesParams likesParams)
         {
             var users = _context.Users!.AsQueryable();
             var likes = _context.Likes!.AsQueryable();
 
-            if (predicate == "liked")
+            if (likesParams.Predicate == "liked")
             {
-                likes = likes.Where(like => like.SourceUserId == userId);
+                likes = likes.Where(like => like.SourceUserId == likesParams.UserId);
                 users = likes.Select(like => like.LikedUser)!;
             }
 
-            if (predicate == "likedBy")
+            if (likesParams.Predicate == "likedBy")
             {
-                likes = likes.Where(like => like.LikedUserId == userId);
+                likes = likes.Where(like => like.LikedUserId == likesParams.UserId);
                 users = likes.Select(like => like.SourceUser)!;
             }
 
@@ -51,7 +52,8 @@ namespace API.Data
             //     City = user.City
             // }).ToListAsync();
 
-            return await users.ProjectTo<LikeDto>(_mapper.ConfigurationProvider).ToListAsync(); // Автомаппером проще
+            var likedUsers = users.ProjectTo<LikeDto>(_mapper.ConfigurationProvider); // Автомаппером проще
+            return await PagedList<LikeDto>.CreateAsync(likedUsers, likesParams.PageNumber, likesParams.PageSize);
         }
 
         // Получить юзера с его коллекцией лайков
