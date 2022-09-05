@@ -17,7 +17,6 @@ namespace API.Controllers
         {
             _likesRepository = likesRepository;
             _userRepository = userRepository;
-
         }
 
         [HttpPost("{username}")]

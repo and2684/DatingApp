@@ -37,6 +37,9 @@ namespace API.Extensions
             // Сервис для лайков
             services.AddScoped<ILikesRepository, LikesRepository>();
 
+            // Сервис для сообщений
+            services.AddScoped<IMessageRepository, MessageRepository>();
+
             return services;
         }        
     }
