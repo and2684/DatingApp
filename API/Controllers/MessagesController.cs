@@ -1,6 +1,7 @@
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -52,5 +53,24 @@ namespace API.Controllers
 
             return BadRequest("Failed to send message.");
         }        
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<MessageDto>>> GetMessagesForUser([FromQuery] MessageParams messageParams)
+        {
+            messageParams.Username = User.GetUsername();
+
+            var messages = await _messageRepository.GetMessagesForUser(messageParams);
+            Response.AddPaginationHeader(messages!.CurrentPage, messages.PageSize, messages.TotalCount, messages.TotalPages);
+
+            return messages!;
+        }
+
+        [HttpGet("thread/{recipientUsername}")] // Имя ДРУГОГО пользователя (с которым мы хотим посмотреть беседу)
+        public async Task<ActionResult<IEnumerable<MessageDto>>> GetMessageThread([FromRoute] string recipientUsername)
+        {
+            var currentUsername = User.GetUsername();
+
+            return Ok(await _messageRepository.GetMessageThread(currentUsername, recipientUsername));
+        }
     }
 }

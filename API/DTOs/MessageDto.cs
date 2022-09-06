@@ -13,5 +13,6 @@ namespace API.DTOs
         public string RecipientPhotoUrl { get; set; } = string.Empty;
         public DateTime? DateRead { get; set; }
         public DateTime MessageSent { get; set; }
+        public string Content { get; set; } = string.Empty;
     }
 }
