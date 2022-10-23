@@ -54,11 +54,11 @@ namespace API.Data
             // switch (messageParams.Container)
             // {
             //     case "Inbox": 
-            //        query = query?.Where(u => u.Recipient.Username == messageParams.Username);
-            //        break;
+            //         query = query?.Where(u => u.Recipient.Username == messageParams.Username);
+            //         break;
             //     case "Outbox": 
-            //        query = query?.Where(u => u.Sender.Username == messageParams.Username);
-            //        break;
+            //         query = query?.Where(u => u.Sender.Username == messageParams.Username);
+            //         break;
             //     default:
             //         query = query?.Where(u => u.Recipient.Username == messageParams.Username && u.DateRead == null);
             //         break;
