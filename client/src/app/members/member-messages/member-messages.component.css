@@ -1,5 +1,6 @@
 .card {
     border: none;
+    padding-bottom: 25px;
 }
 
 .chat {
@@ -27,6 +28,19 @@
     float: right;
 }
 
-.card-footer {
+.form-footer {
+    width: 90%;
+    align-self: center;
+}
+
+.input-sm {
+    width: 89.7%;
     display: inline-flex;
+    align-self: center;
+    margin-right: 0.3%;
+}
+
+.btn-footer {
+    width: 10%;
+    align-self: center;
 }

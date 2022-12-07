@@ -10,23 +10,27 @@
                     <div class="chat-body inline-div">
                         <div class="header">
                             <small class="text-muted">
-                                <span class="fa fa-clock-o">{{message.messageSent | timeago}}</span>
+                                <span class="fa fa-clock-o">{{message.messageSent
+                                    | timeago}}</span>
                                 <!-- <span class="text-danger" *ngIf="!message.dateRead && message.senderUsername !== username"> -->
-                                <span class="text-danger" *ngIf="!message.dateRead">
+                                <span class="text-danger"
+                                    *ngIf="!message.dateRead">
                                     (unread)
                                 </span>
                                 <!-- <span class="text-success" *ngIf="message.dateRead && message.senderUsername !== username"> -->
-                                <span class="text-success" *ngIf="message.dateRead">                                    
+                                <span class="text-success"
+                                    *ngIf="message.dateRead">
                                     (read {{message.dateRead | timeago}})
-                                </span>                                
+                                </span>
                             </small>
                         </div>
                         <p>{{message.content}}</p>
                     </div>
 
                     <span class="chat-img">
-                        <img class = "rounded-circle" 
-                            src="{{message.senderPhotoUrl || './assets/user.png'}}" 
+                        <img class="rounded-circle"
+                            src="{{message.senderPhotoUrl ||
+                            './assets/user.png'}}"
                             alt="{{message.senderUsername}}">
                     </span>
                 </div>
@@ -34,8 +38,16 @@
         </ul>
     </div>
 
-    <div class="card-footer">
-        <input type="text" class="form-control input-sm" placeholder="Send a private message">
-        <button class="btn btn-primary" type="submit">Send</button>
-    </div>
+    <form #messageForm="ngForm" (ngSubmit)="sendMessage()" autocomplete="off"
+        class="form-footer">
+        <input
+            name="messageContent"
+            required
+            [(ngModel)]="messageContent"
+            type="text"
+            class="form-control input-sm"
+            placeholder="Send a private message">
+        <button [disabled]="!messageForm.valid" class="btn btn-primary btn-footer"
+            type="submit">Send</button>
+    </form>
 </div>

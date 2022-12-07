@@ -5,10 +5,10 @@
         </button>
         <button class="btn-primary btn-rounded btn-sm" btnRadio="Inbox" [(ngModel)]="container" (click)="loadMessages()">
             <i class="fa fa-envelope-open"></i> Inbox messages
-        </button>        
+        </button>
         <button class="btn-primary btn-rounded btn-sm" btnRadio="Outbox" [(ngModel)]="container" (click)="loadMessages()">
             <i class="fa fa-paper-plane"></i> Outbox messages
-        </button>        
+        </button>
     </div>
 </div>
 
@@ -24,26 +24,20 @@
             <th style="width: 20%">Sent / Received</th>
             <th style="width: 20%"></th>
         </tr>
-        <tr *ngFor="let message of messages" 
-            routerLink='{{container === "Outbox" 
-                ? "/members/" + message.recipientUsername 
-                : "/members/" + message.senderUsername}}'>
+        <tr *ngFor="let message of messages" routerLink='{{container === "Outbox" 
+                ? "/member/" + message.recipientUsername 
+                : "/member/" + message.senderUsername}}' 
+                [queryParams]='{tab: 3}'>
             <td>{{message.content}}</td>
             <td>
                 <div *ngIf="container === 'Outbox'">
-                    <img
-                        class="img-circle rounded-circle mr-2" 
-                        src="{{message.recipientPhotoUrl || './assets/user.png'}}" 
-                        alt="{{message.recipientUsername}}">
+                    <img class="img-circle rounded-circle mr-2" src="{{message.recipientPhotoUrl || './assets/user.png'}}" alt="{{message.recipientUsername}}">
                     <strong>{{message.recipientUsername | titlecase}}</strong>
                 </div>
                 <div *ngIf="container !== 'Outbox'">
-                    <img
-                        class="img-circle rounded-circle mr-2" 
-                        src="{{message.senderPhotoUrl || './assets/user.png'}}" 
-                        alt="{{message.senderUsername}}">
+                    <img class="img-circle rounded-circle mr-2" src="{{message.senderPhotoUrl || './assets/user.png'}}" alt="{{message.senderUsername}}">
                     <strong>{{message.senderUsername | titlecase}}</strong>
-                </div>                
+                </div>
             </td>
             <td>{{message.messageSent | timeago}}</td>
             <td>
@@ -55,15 +49,6 @@
 </div>
 
 <div class="d-flex justify-content-center" *ngIf="pagination">
-    <pagination 
-        [boundaryLinks]="true" 
-        [totalItems]="pagination.totalItems" 
-        [itemsPerPage]="pagination.itemsPerPage"
-        [(ngModel)]="pagination.currentPage" 
-        (pageChanged)="pageChanged($event)" 
-        previousText="&lsaquo;"
-        nextText="&rsaquo;" 
-        firstText="&laquo;" 
-        lastText="&raquo;">
+    <pagination [boundaryLinks]="true" [totalItems]="pagination.totalItems" [itemsPerPage]="pagination.itemsPerPage" [(ngModel)]="pagination.currentPage" (pageChanged)="pageChanged($event)" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
     </pagination>
 </div>
